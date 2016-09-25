@@ -2,26 +2,27 @@
 'use strict';
 
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {NavigatorIOS, StyleSheet} from 'react-native';
+import SearchEntry from './SearchEntry.js';
 
 var SearchTab = React.createClass({
   render: function() {
-    return <View style={styles.container}>
-        <Text style={styles.description}>this is search tab</Text>
-      </View>
+    return (
+      <NavigatorIOS
+        style={styles.container}
+        initialRoute={{
+          title: 'Search Entlies',
+          component: SearchEntry
+        }}
+      />
+    );
   }
 });
 
 var styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  description: {
-    fontSize: 15,
-    backgroundColor: '#FFFFFF'
-  }
 });
 
 // To enable this
