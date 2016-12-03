@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Text } from 'react-native'
+import { connect } from 'react-redux';
 import {
   emailChanged,
   passwordChanged,
@@ -20,7 +20,7 @@ class LoginForm extends Component {
 
   onButtonPress() { 
     const {email, password} = this.props;
-
+    console.log('onButtonPress is called');
     this.props.loginUser({ email, password });
   }
 
@@ -78,4 +78,8 @@ const mapStateToProps = ({ auth }) => {
 // connectの２つの引数の意味
 // 1つ目: ここのcomponentで使いたいstateをpropsにする
 // 2つ目: componentにbindsいたいactioncreatorをpropsにしてもらう
-export default connect(mapStateToProps, { emailChanged, passwordChanged, loginUser })(LoginForm);
+export default connect(mapStateToProps, {
+  emailChanged,
+  passwordChanged,
+  loginUser,
+})(LoginForm);
