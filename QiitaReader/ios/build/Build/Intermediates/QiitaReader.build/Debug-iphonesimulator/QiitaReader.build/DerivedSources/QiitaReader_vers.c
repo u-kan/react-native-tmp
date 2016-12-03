@@ -1,0 +1,1 @@
+ const unsigned char QiitaReaderVersionString[] __attribute__ ((used)) = "@(#)PROGRAM:QiitaReader  PROJECT:QiitaReader-1" "\n"; const double QiitaReaderVersionNumber __attribute__ ((used)) = (double)1.;
