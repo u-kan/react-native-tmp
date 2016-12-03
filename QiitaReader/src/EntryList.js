@@ -1,35 +1,26 @@
 'use strict';
 
 import React from 'react';
-import {View, Text, StyleSheet, Image, ListView, TouchableHighlight} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  ListView,
+  TouchableHighlight,
+  ActivityIndicator,
+} from 'react-native';
+import EntryDetail from './EntryDetail.js';
 
 var QIITA_REACTJS_ENTRY_URL = 'https://qiita.com/api/v2/tags/reactjs/items';
-
-var TEST_ENTRY_DATA = [
-  {
-    user: {
-      profile_image_url: 'https://facebook.github.io/react/img/logo_og.png',
-      id: 'uchida'
-    },
-    title: 'React Native Test!1'
-  },
-  {
-    user: {
-      profile_image_url: 'https://facebook.github.io/react/img/logo_og.png',
-      id: 'uchida2'
-    },
-    title: 'React Native Test!2'
-  }  
-];
-
-var entries = TEST_ENTRY_DATA;
 
 var EntryList = React.createClass({
   getInitialState: function() {
     return {
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 !== r2,
-      })
+      }),
+      isLoaded: false
     };
   },
   fetchData: function() {
@@ -37,7 +28,8 @@ var EntryList = React.createClass({
       .then((response) => response.json())
       .then((responseData) => {
         this.setState({
-          dataSource: this.state.dataSource.cloneWithRows(responseData)
+          dataSource: this.state.dataSource.cloneWithRows(responseData),
+          isLoaded: true
         });
       })
       .done();
@@ -47,7 +39,9 @@ var EntryList = React.createClass({
   },
   renderEntry: function(entry) {
     return(
-      <TouchableHighlight>
+      <TouchableHighlight
+        underlayColor='#0000'
+        onPress={() => this.onPressed(entry)}>
         <View>
           <View style={styles.container}>
             <Image
@@ -63,14 +57,47 @@ var EntryList = React.createClass({
       </TouchableHighlight>
     );
   },
-  render: function() {
+  onPressed: function(entry) {
+    this.props.navigator.push({
+      title: entry.title,
+      component: EntryDetail,
+      passProps: {url: entry.url}
+    })
+  },
+  viewLoadingData: function() {
     return (
-      <ListView
-        style={styles.listView}
-        dataSource={this.state.dataSource}
-        renderRow={this.renderEntry}
-      />
+      <View style={styles.activityIndicator}>
+        <ActivityIndicator
+          animating={true}
+          size={'large'}
+        />
+        <View>
+          <Text style={styles.loadingMessage}>
+            Please wait a second ... 
+          </Text>
+        </View>
+      </View>
     );
+  },
+  render: function() {
+    /*
+      はじめにviewLoadingDataが呼び出されて、その後ListView
+      はじめはちゃんとNavigationBarの分margin空いてるが
+      ListViewの時にはその分が消されてしまう
+    */
+    if(this.state.isLoaded){  
+      return (
+        <ListView
+          style={styles.listView}
+          dataSource={this.state.dataSource}
+          renderRow={this.renderEntry}
+        />
+      );
+    } else {
+      return (
+        this.viewLoadingData()
+      );
+    };
   }
 });
 
@@ -105,6 +132,17 @@ var styles = StyleSheet.create({
   listView: {
     backgroundColor: '#F5FCFF'
   },
+  activityIndicator: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingMessage: {
+    flex: 1,
+    fontSize: 20,
+    color: '#656565'
+  }
 });
 
 module.exports = EntryList;
