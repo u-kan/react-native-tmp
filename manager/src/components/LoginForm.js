@@ -5,8 +5,14 @@ import {
   emailChanged,
   passwordChanged,
   loginUser,
-} from '../actions'; // これはaction creator。actionsの下でarrayを返すようにして登録する
-import { Card, CardSection, Input, Button } from './common';
+} from '../actions';
+import {
+  Card,
+  CardSection,
+  Input,
+  Button,
+  Spinner
+} from './common';
 
 class LoginForm extends Component {
   //event handler as a method
@@ -22,6 +28,20 @@ class LoginForm extends Component {
     const {email, password} = this.props;
     console.log('onButtonPress is called');
     this.props.loginUser({ email, password });
+  }
+
+  renderRow() {
+    if (this.props.loading) {
+      console.log('spinner')
+      return( <Spinner size='large'/> );
+    }
+
+    return(
+      <Button onPress={this.onButtonPress.bind(this)}>
+        Login
+      </Button>
+    );
+
   }
 
   render() {
@@ -51,9 +71,7 @@ class LoginForm extends Component {
         </Text>
 
         <CardSection>
-          <Button onPress={this.onButtonPress.bind(this)}>
-            Login
-          </Button>
+          {this.renderRow()}
         </CardSection>
       </Card>
     );
@@ -69,8 +87,8 @@ const styles = {
 };
 
 const mapStateToProps = ({ auth }) => {
-  const { email, password, error } = auth;
-  return { email, password, error };
+  const { email, password, error , loading} = auth;
+  return { email, password, error, loading };
 };
 
 // こいつのおかげで、呼ばれた段階で、emailChangedがactioncreatorとして呼ばれる

@@ -3,7 +3,8 @@ import { View } from 'react-native';
 
 const CardSection = (props) => {
   return (
-    <View style={styles.containerStyle}>
+    // array でstyleみたいにt英技されると、左側のがメインで使われて、propsで渡された場合のみそっち側が適用されるっていう実装になる
+    <View style={[styles.containerStyle, props.style]}>
       {props.children}
     </View>
   );
